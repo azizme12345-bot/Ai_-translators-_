@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Site Verification Tags -->
+  <meta name="google-site-verification" content="googleb4e853825707d799" />
+  <meta name="google-site-verification" content="OGCo78U0pHg7jiU5xCjpJoSIEbZhTalP8FQ9ZksFQ_c" />
+  <meta name="google-site-verification" content="e2RrqWDlKxHOPt0hT0SbW2dvhjsUgITfsuQwy6ZZhjY" />
+  <meta name="description" content="Free Online AI Voice & Text Translator for Urdu, English, Hindi, Arabic, Punjabi and 50+ languages with natural voice speaking." />
+  <title>AI Voice & Text Translator | آن لائن مترجم</title>
+
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .urdu-text {
+      font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+      line-height: 2.2;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .mic-recording {
+      animation: pulse-ring 1.5s infinite;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 min-h-screen text-slate-800 flex flex-col justify-between p-3 sm:p-6 md:p-8">
+
+  <!-- Main Container -->
+  <main class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 overflow-hidden my-auto">
+    
+    <!-- Top Header -->
+    <header class="flex items-center justify-between px-5 sm:px-8 py-5 border-b border-slate-100 bg-white">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 text-xl font-bold">
+          🌐
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            AI Voice & Text Translator
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-500">بول کر لکھیں اور قدرتی آواز میں ترجمہ سنیں</p>
+        </div>
+      </div>
+      <button 
+        onclick="clearAll()" 
+        class="text-xs sm:text-sm font-medium text-slate-500 hover:text-red-600 px-3.5 py-2 rounded-xl hover:bg-red-50 border border-slate-200 transition-all flex items-center gap-1.5"
+        title="Clear all text (سب صاف کریں)"
+      >
+        <span>🗑️</span>
+        <span class="hidden sm:inline">Clear (صاف کریں)</span>
+      </button>
+    </header>
+
+    <!-- Language Selector Bar -->
+    <section class="p-4 sm:p-6 bg-slate-50/70 border-b border-slate-100">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+        
+        <!-- Source Language -->
+        <div class="w-full sm:w-[45%]">
+          <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">
+            کس زبان سے (From)
+          </label>
+          <select 
+            id="sourceLang" 
+            onchange="onSourceLangChange()"
+            class="w-full bg-white border border-slate-300 rounded-xl py-3 px-4 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs cursor-pointer"
+          >
+            <option value="auto">🌐 خودکار شناخت (Auto Detect)</option>
+            <option value="ur-PK" selected>🇵🇰 اردو (Urdu)</option>
+            <option value="en-US">🇬🇧 English (انگریزی)</option>
+            <option value="pa-PK">🇵🇰 پنجابی (Punjabi)</option>
+            <option value="ar-SA">🇸🇦 العربية (Arabic)</option>
+            <option value="hi-IN">🇮🇳 हिन्दी (Hindi)</option>
+            <option value="ja-JP">🇯🇵 日本語 (Japanese)</option>
+            <option value="zh-CN">🇨🇳 中文 (Chinese)</option>
+            <option value="fr-FR">🇫🇷 Français (French)</option>
+            <option value="de-DE">🇩🇪 Deutsch (German)</option>
+            <option value="es-ES">🇪🇸 Español (Spanish)</option>
+            <option value="tr-TR">🇹🇷 Türkçe (Turkish)</option>
+          </select>
+        </div>
+
+        <!-- Swap Button -->
+        <button 
+          onclick="swapLanguages()" 
+          class="p-3 rounded-full bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-300 shadow-xs transition-all active:scale-95 flex-shrink-0"
+          title="Swap Languages (زبانیں تبدیل کریں)"
+        >
+          ⇄
+        </button>
+
+        <!-- Target Language -->
+        <div class="w-full sm:w-[45%]">
+          <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">
+            کس زبان میں (To)
+          </label>
+          <select 
+            id="targetLang" 
+            class="w-full bg-white border border-slate-300 rounded-xl py-3 px-4 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs cursor-pointer"
+          >
+            <option value="en-US" selected>🇬🇧 English (انگریزی)</option>
+            <option value="ur-PK">🇵🇰 اردو (Urdu)</option>
+            <option value="pa-PK">🇵🇰 پنجابی (Punjabi)</option>
+            <option value="ar-SA">🇸🇦 العربية (Arabic)</option>
+            <option value="hi-IN">🇮🇳 हिन्दी (Hindi)</option>
+            <option value="ja-JP">🇯🇵 日本語 (Japanese)</option>
+            <option value="zh-CN">🇨🇳 中文 (Chinese)</option>
+            <option value="fr-FR">🇫🇷 Français (French)</option>
+            <option value="de-DE">🇩🇪 Deutsch (German)</option>
+            <option value="es-ES">🇪🇸 Español (Spanish)</option>
+            <option value="tr-TR">🇹🇷 Türkçe (Turkish)</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Error/Alert Banner -->
+    <div id="statusAlert" class="hidden mx-5 sm:mx-8 mt-5 p-4 rounded-xl text-sm font-medium"></div>
+
+    <!-- Translation Workspaces -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 p-5 sm:p-8">
+      
+      <!-- Source Box -->
+      <div class="flex flex-col bg-white border border-slate-200 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-slate-50/60 border-b border-slate-100 text-xs text-slate-500">
+          <span class="font-semibold text-slate-700">متن درج کریں یا بولیں:</span>
+          <span id="charCount">0 حروف</span>
+        </div>
+        <textarea 
+          id="inputText" 
+          rows="6"
+          dir="auto"
+          placeholder="یہاں لکھیں یا بولنے کے لیے مائیک دبائیں... (Type or click Speak)"
+          class="w-full p-4 text-base sm:text-lg text-slate-800 resize-none outline-none bg-transparent placeholder-slate-400"
+        ></textarea>
+        
+        <!-- Source Action Buttons -->
+        <div class="flex items-center justify-between p-3 bg-slate-50/90 border-t border-slate-100 flex-wrap gap-2">
+          <div class="flex items-center space-x-2">
+            <!-- Voice Input Button -->
+            <button 
+              id="micBtn" 
+              onclick="toggleSpeech()" 
+              class="px-4 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 transition shadow-xs flex items-center gap-1.5"
+              title="Speak to write (بول کر لکھیں)"
+            >
+              <span id="micIcon">🎤</span>
+              <span id="micText">بولیں (Voice)</span>
+            </button>
+
+            <!-- Input Speaker -->
+            <button 
+              id="listenInputBtn"
+              onclick="playAudio('inputText', 'sourceLang', 'listenInputBtn')" 
+              class="px-3.5 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 transition shadow-xs flex items-center gap-1.5"
+              title="Listen to input text (سنیں)"
+            >
+              <span>🔊</span>
+              <span>سنیں</span>
+            </button>
+          </div>
+
+          <!-- Translate Button -->
+          <button 
+            id="translateBtn" 
+            onclick="translateNow()" 
+            class="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition active:scale-95 flex items-center gap-1.5 ml-auto"
+          >
+            <span>ترجمہ کریں</span>
+            <span>➔</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Target Box -->
+      <div class="flex flex-col bg-slate-50/70 border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-slate-100/70 border-b border-slate-200 text-xs text-slate-500">
+          <span class="font-semibold text-slate-700">ترجمہ (Translation):</span>
+          <span id="translatedStatus" class="text-blue-600 font-medium hidden">مکمل ہو گیا ✓</span>
+        </div>
+        
+        <div class="w-full p-4 min-h-[170px] sm:min-h-[200px] flex-1 relative overflow-y-auto">
+          <!-- Loading Spinner -->
+          <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 backdrop-blur-xs flex items-center justify-center rounded-2xl z-10">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-blue-600">
+              <span class="animate-spin text-xl">⏳</span>
+              <span>ترجمہ کیا جا رہا ہے...</span>
+            </div>
+          </div>
+          <p id="outputText" class="text-base sm:text-lg text-slate-800 leading-relaxed whitespace-pre-wrap select-all"></p>
+        </div>
+
+        <!-- Target Action Buttons -->
+        <div class="flex items-center justify-end p-3 bg-slate-100/90 border-t border-slate-200 space-x-2">
+          <!-- Output Speaker -->
+          <button 
+            id="listenOutputBtn"
+            onclick="playAudio('outputText', 'targetLang', 'listenOutputBtn')" 
+            class="px-4 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 transition shadow-xs flex items-center gap-1.5"
+            title="Listen to translated text (ترجمہ سنیں)"
+          >
+            <span>🔊</span>
+            <span>ترجمہ سنیں</span>
+          </button>
+          
+          <!-- Copy Button -->
+          <button 
+            id="copyBtn" 
+            onclick="copyOutput()" 
+            class="px-4 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 transition shadow-xs flex items-center gap-1.5"
+            title="Copy Translation (کاپی کریں)"
+          >
+            <span>📋</span>
+            <span>کاپی</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Footer Tip -->
+    <div class="px-5 sm:px-8 py-3.5 bg-slate-50 border-t border-slate-100 text-center text-xs text-slate-400">
+      تیز رفتار آواز، مائیکروفون اور تمام زبانوں کے ترجمے کی سہولت • بغیر کسی اکاؤنٹ کے مکمل مفت
+    </div>
+
+  </main>
+
+  <footer class="mt-6 text-center text-xs text-slate-400">
+    AI Voice & Text Translator &bull; Verified with Google Search Console
+  </footer>
+
+  <!-- Single-File Core Application Logic -->
+  <script>
+    let recognition = null;
+    let isListening = false;
+    let currentAudio = null;
+
+    const inputArea = document.getElementById('inputText');
+    const outputArea = document.getElementById('outputText');
+    const charCount = document.getElementById('charCount');
+    const statusAlert = document.getElementById('statusAlert');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const micBtn = document.getElementById('micBtn');
+    const micText = document.getElementById('micText');
+
+    inputArea.addEventListener('input', () => {
+      const len = inputArea.value.length;
+      charCount.innerText = `${len} حروف`;
+    });
+
+    inputArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        translateNow();
+      }
+    });
+
+    function showAlert(msg, isError = false) {
+      statusAlert.innerText = msg;
+      statusAlert.className = `mx-5 sm:mx-8 mt-5 p-4 rounded-xl text-sm font-medium block ${
+        isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+      }`;
+      setTimeout(() => {
+        statusAlert.className = 'hidden';
+      }, 5000);
+    }
+
+    let speechBaseText = "";
+
+    // Voice Input (Microphone) Logic
+    function toggleSpeech() {
+      if (isListening) {
+        if (recognition) {
+          try { 
+            recognition.onstart = null;
+            recognition.onresult = null;
+            recognition.onerror = null;
+            recognition.onend = null;
+            recognition.stop(); 
+          } catch(e){}
+        }
+        resetMic();
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        showAlert("براؤزر میں مائیکروفون اسپیچ سپورٹ نہیں ہے، براہ کرم گوگل کروم استعمال کریں۔", true);
+        return;
+      }
+
+      try {
+        speechBaseText = inputArea.value;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+
+        const src = document.getElementById('sourceLang').value;
+        recognition.lang = src === 'auto' ? 'ur-PK' : src;
+
+        recognition.onstart = () => {
+          isListening = true;
+          micBtn.className = "px-4 py-2 rounded-full text-xs font-semibold text-white bg-red-600 hover:bg-red-700 transition shadow-md mic-recording flex items-center gap-1.5";
+          micText.innerText = "سن رہا ہے... (Listening)";
+        };
+
+        recognition.onresult = (event) => {
+          let interimTranscript = "";
+          let finalTranscript = "";
+          
+          for (let i = 0; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript + " ";
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          
+          const spoken = (finalTranscript + interimTranscript).trim();
+          const base = speechBaseText ? speechBaseText.trim() : "";
+          if (spoken) {
+            inputArea.value = base ? `${base} ${spoken}` : spoken;
+          }
+          if (finalTranscript.trim()) {
+            speechBaseText = (base ? `${base} ${finalTranscript.trim()}` : finalTranscript.trim()).trim();
+            inputArea.value = speechBaseText;
+          }
+          
+          charCount.innerText = `${inputArea.value.length} حروف`;
+        };
+
+        recognition.onerror = (event) => {
+          if (event.error === 'no-speech' || event.error === 'aborted') {
+            return;
+          }
+          if (event.error === 'not-allowed') {
+            showAlert("مائیکروفون کی اجازت نہیں ملی۔ براہ کرم براؤزر سیٹنگز میں مائیک آن کریں۔", true);
+          } else {
+            console.error(`مائیک ایرر: ${event.error}`);
+          }
+          resetMic();
+        };
+
+        recognition.onend = () => {
+          if (isListening) {
+            speechBaseText = inputArea.value.trim();
+            setTimeout(() => {
+              if (isListening) {
+                try { recognition.start(); } catch(e) { resetMic(); }
+              }
+            }, 120);
+          } else {
+            resetMic();
+          }
+        };
+
+        recognition.start();
+      } catch (err) {
+        showAlert("مائیکروفون شروع نہیں ہو سکا۔ دوبارہ کوشش کریں۔", true);
+        resetMic();
+      }
+    }
+
+    function resetMic() {
+      isListening = false;
+      micBtn.className = "px-4 py-2 rounded-full text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 transition shadow-xs flex items-center gap-1.5";
+      micText.innerText = "بولیں (Voice)";
+    }
+
+    // Translation Logic
+    async function translateNow() {
+      const text = inputArea.value.trim();
+      if (!text) {
+        showAlert("براہ کرم ترجمہ کرنے کے لیے کچھ متن لکھیں یا بولیں۔", true);
+        return;
+      }
+
+      const srcSelect = document.getElementById('sourceLang').value;
+      const targetSelect = document.getElementById('targetLang').value;
+
+      const sl = srcSelect === 'auto' ? 'auto' : srcSelect.split('-')[0];
+      const tl = targetSelect.split('-')[0];
+
+      loadingOverlay.classList.remove('hidden');
+
+      try {
+        const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error("Translation request failed");
+
+        const data = await res.json();
+        let translatedText = "";
+        if (data && data[0]) {
+          data[0].forEach(item => {
+            if (item && item[0]) translatedText += item[0];
+          });
+        }
+
+        outputArea.innerText = translatedText;
+
+        if (['ur', 'ar', 'pa', 'fa'].includes(tl)) {
+          outputArea.classList.add('urdu-text');
+          outputArea.setAttribute('dir', 'rtl');
+        } else {
+          outputArea.classList.remove('urdu-text');
+          outputArea.setAttribute('dir', 'ltr');
+        }
+
+        document.getElementById('translatedStatus').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('translatedStatus').classList.add('hidden');
+        }, 3000);
+      } catch (err) {
+        showAlert("ترجمہ کرنے میں دشواری پیش آئی۔ انٹرنیٹ کنکشن چیک کریں۔", true);
+      } finally {
+        loadingOverlay.classList.add('hidden');
+      }
+    }
+
+    // Audio Speaker (TTS) Logic
+    function playAudio(elementId, langSelectId, btnId) {
+      const el = document.getElementById(elementId);
+      const text = (el.value || el.innerText || '').trim();
+      if (!text) {
+        showAlert("سننے کے لیے پہلے کچھ متن لکھیں یا ترجمہ کریں۔", true);
+        return;
+      }
+
+      // If currently playing, stop it
+      if (currentAudio) {
+        try { currentAudio.pause(); } catch(e){}
+        currentAudio = null;
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        return;
+      }
+
+      const langCode = document.getElementById(langSelectId).value;
+      const shortLang = langCode === 'auto' ? 'ur' : langCode.split('-')[0];
+
+      // Tier 1: Natural Voice Streaming Audio
+      try {
+        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(shortLang)}&q=${encodeURIComponent(text.slice(0, 180))}`;
+        const audio = new Audio(audioUrl);
+        currentAudio = audio;
+
+        const btn = document.getElementById(btnId);
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = `<span>⏹️</span><span>آواز بند</span>`;
+
+        audio.onended = () => {
+          currentAudio = null;
+          btn.innerHTML = originalContent;
+        };
+        audio.onerror = () => {
+          currentAudio = null;
+          btn.innerHTML = originalContent;
+          fallbackSpeechSynthesis(text, langCode);
+        };
+
+        audio.play().catch(() => {
+          currentAudio = null;
+          btn.innerHTML = originalContent;
+          fallbackSpeechSynthesis(text, langCode);
+        });
+      } catch(e) {
+        fallbackSpeechSynthesis(text, langCode);
+      }
+    }
+
+    function fallbackSpeechSynthesis(text, langCode) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = langCode === 'auto' ? 'ur-PK' : langCode;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Copy Translation
+    function copyOutput() {
+      const text = outputArea.innerText.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showAlert("ترجمہ کامیابی کے ساتھ کاپی ہو گیا! (Copied)");
+      });
+    }
+
+    // Clear All
+    function clearAll() {
+      inputArea.value = "";
+      outputArea.innerText = "";
+      charCount.innerText = "0 حروف";
+      statusAlert.className = "hidden";
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+    }
+
+    // Swap Languages
+    function swapLanguages() {
+      const s = document.getElementById('sourceLang');
+      const t = document.getElementById('targetLang');
+      if (s.value === 'auto') {
+        s.value = 'en-US';
+      }
+      const temp = s.value;
+      s.value = t.value;
+      t.value = temp;
+    }
+  </script>
+</body>
+</html>
